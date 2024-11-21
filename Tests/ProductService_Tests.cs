@@ -7,7 +7,7 @@ namespace Tests;
 public class ProductService_Tests
 {
     [Fact]
-    public void Add_ShouldAddProductToList()
+    public void ProductService_ShouldIntegrateProductRepository()
     {
         IRepository<IProduct> repo = new ProductRepository();
         ProductService service = new ProductService(repo);
