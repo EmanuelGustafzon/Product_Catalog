@@ -1,7 +1,7 @@
 ﻿using Shared.Interfaces;
 
 namespace Shared.Services;
-public class ProductService
+public class ProductService : IProductService
 {
     IRepository<IProduct> _ProductRepo;
 
@@ -16,5 +16,18 @@ public class ProductService
     public IEnumerable<IProduct> GetAll()
     {
         return _ProductRepo.Get();
+    }
+
+    public IProduct GetByID(string id)
+    {
+        return _ProductRepo.Get(id);
+    }
+    public void Update(string id, IProduct product)
+    {
+        _ProductRepo.Update(id, product);
+    }
+    public void Delete(string id)
+    {
+        _ProductRepo.Delete(id);
     }
 }

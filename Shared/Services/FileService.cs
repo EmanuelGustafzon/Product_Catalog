@@ -3,18 +3,40 @@
 namespace Shared.Services;
 public class FileService : IFileService
 {
-    string _filePath = @"C:\Users\Emanuel";
-    public string ReadFile()
-    {
-        throw new NotImplementedException();
+    string _filePath;
 
+    public FileService(string filePath)
+    {
+        _filePath = filePath;
     }
 
-    public void WriteFile(string content)
+    public string ReadFile(string fileName)
     {
-        using (StreamWriter outputFile = new StreamWriter(Path.Combine(_filePath, "WriteLines.txt")))
+        try
         {
-            outputFile.WriteLine(content);
+            using StreamReader reader = new(Path.Combine(_filePath, fileName));
+            string text = reader.ReadToEnd();
+            return text;
         }
+        catch (IOException e)
+        {
+            Console.WriteLine("The file could not be read:");
+            Console.WriteLine(e.Message);
+            return "";
+        }
+    }
+
+    public void WriteFile(string content, string fileName)
+    {
+        try
+        {
+            using StreamWriter outputFile = new StreamWriter(Path.Combine(_filePath, fileName));
+            outputFile.WriteLine(content);
+        } catch (IOException e)
+        {
+            Console.WriteLine("Could not write to file:");
+            Console.WriteLine(e.Message);
+        }
+        
     }
 }

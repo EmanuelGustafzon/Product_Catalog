@@ -1,5 +1,9 @@
-﻿namespace Shared.Interfaces;
+﻿using Shared.Models;
+using System.Text.Json.Serialization;
 
+namespace Shared.Interfaces;
+
+[JsonDerivedType(typeof(Product), nameof(Product))]
 public interface IProduct
 {
     public string ID { get; set; }
