@@ -36,6 +36,9 @@ public class FileService : IFileService
             Console.WriteLine("Could not write to file:");
             Console.WriteLine(e.Message);
         }
-        
+    }
+    public bool FileExist(string fileName)
+    {
+        return File.Exists(Path.Combine(_filePath, fileName));
     }
 }

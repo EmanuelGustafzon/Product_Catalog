@@ -88,6 +88,8 @@ public class ProductRepository : IRepository<IProduct>
     {
         try
         {
+            if (!_fileService.FileExist("Products.json")) return;
+
             var json = _fileService.ReadFile("Products.json");
             if(json == null) return;
             List<IProduct>? items = _jsonService.Deserialize(json);
