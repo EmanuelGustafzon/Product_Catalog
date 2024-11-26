@@ -2,45 +2,23 @@
 using Shared.Models;
 
 namespace Shared.Repositories;
-public class ProductRepository : IRepository<IProduct>
+public class ProductRepository : BaseRepository<IProduct>
 {
-    List<IProduct> _products = [];
-    IJsonService<IProduct> _jsonService;
-    IFileService _fileService;
+    public ProductRepository(IJsonService<IProduct> jsonService, IFileService fileService, string filePath) 
+        : base (jsonService, fileService, filePath) { }
 
-    public ProductRepository(IJsonService<IProduct> jsonService, IFileService fileService)
+    public override IProduct? Get(string id)
     {
-        _jsonService = jsonService;
-        _fileService = fileService;
-        PopulateListFromFile();
-    }
-    public int Add(IProduct entity)
-    {
-        try
-        {
-            _products.Add(entity);
-            return (int)StatusCodes.OK;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return (int)StatusCodes.InternalError;
-        }
-    }
-    public IEnumerable<IProduct> Get() => _products;
-
-    public IProduct? Get(string id)
-    {
-        IProduct? foundProduct = _products.FirstOrDefault(x => x.ID == id);
+        IProduct? foundProduct = Entities.FirstOrDefault(x => x.ID == id);
         return foundProduct ?? null;
     }
-    public int Delete(string id)
+    public override int Delete(string id)
     {
         try
         {
-            IProduct? product = _products.FirstOrDefault(x => x.ID == id);
+            IProduct? product = Entities.FirstOrDefault(x => x.ID == id);
             if (product == null) return (int)StatusCodes.NotFound;
-            _products.Remove(product);
+            Entities.Remove(product);
             return (int)StatusCodes.OK;
 
         } catch (Exception ex)
@@ -49,11 +27,11 @@ public class ProductRepository : IRepository<IProduct>
             return (int)StatusCodes.InternalError;
         }
     }
-    public int Update(string id, IProduct entity)
+    public override int Update(string id, IProduct entity)
     {
         try
         {
-            IProduct? product = _products.FirstOrDefault(x => x.ID == id);
+            IProduct? product = Entities.FirstOrDefault(x => x.ID == id);
 
             if (product == null) return (int)StatusCodes.NotFound;
 
@@ -69,39 +47,5 @@ public class ProductRepository : IRepository<IProduct>
             Console.WriteLine(ex.Message);
             return (int)StatusCodes.InternalError;
         }   
-    }
-    public int SaveChanges()
-    {
-        try
-        {
-            var json = _jsonService.Serialize(_products);
-            _fileService.WriteFile(json, "Products.json");
-            return (int)StatusCodes.OK;
-
-        } catch (Exception ex) {
-
-            Console.WriteLine(ex.Message);
-            return (int)StatusCodes.InternalError;
-        }
-    }
-    private void PopulateListFromFile()
-    {
-        try
-        {
-            if (!_fileService.FileExist("Products.json")) return;
-
-            var json = _fileService.ReadFile("Products.json");
-            if(json == null) return;
-            List<IProduct>? items = _jsonService.Deserialize(json);
-            if (items == null) return;
-            foreach (var item in items)
-            {
-                _products.Add(item);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
     }
 }
