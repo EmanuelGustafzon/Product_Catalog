@@ -34,4 +34,8 @@ public class ProductService : IProductService
     {
         _ProductRepository.Delete(id);
     }
+    public void SaveChanges()
+    {
+        _ProductRepository.SaveChanges();
+    }
 }
