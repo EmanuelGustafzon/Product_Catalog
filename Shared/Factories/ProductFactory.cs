@@ -8,15 +8,14 @@ public static class ProductFactory
     {
         return new Product();
     }
-    public static IProduct Create(string name, string description, string category, double price, string brand)
+    public static IProduct Create(string name, string description, string category, double price)
     {
         return new Product
         {
             Name = name,
             Description = description,
             Category = category,
-            Price = price,
-            Brand = brand
+            Price = price
         };
     }
 }

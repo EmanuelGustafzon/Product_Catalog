@@ -3,31 +3,35 @@
 namespace Shared.Services;
 public class ProductService : IProductService
 {
-    IRepository<IProduct> _ProductRepo;
+    IRepository<IProduct> _ProductRepository;
 
     public ProductService(IRepository<IProduct> productRepo)
     {
-        _ProductRepo = productRepo;
-    }
-    public void Add(IProduct product)
-    {
-        _ProductRepo.Add(product);
+        _ProductRepository = productRepo;
     }
     public IEnumerable<IProduct> GetAll()
     {
-        return _ProductRepo.Get();
+        return _ProductRepository.Get();
     }
-
-    public IProduct GetByID(string id)
+    public void Add(IProduct product)
     {
-        return _ProductRepo.Get(id);
+        foreach(var item in GetAll())
+        {
+            if (item.Name == product.Name) return;
+        }
+        _ProductRepository.Add(product);
+    }
+    public IProduct? GetByID(string id)
+    {
+        var foundProduct = _ProductRepository.Get(id);
+        return foundProduct ?? null;
     }
     public void Update(string id, IProduct product)
     {
-        _ProductRepo.Update(id, product);
+        _ProductRepository.Update(id, product);
     }
     public void Delete(string id)
     {
-        _ProductRepo.Delete(id);
+        _ProductRepository.Delete(id);
     }
 }

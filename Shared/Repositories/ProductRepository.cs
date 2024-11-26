@@ -12,6 +12,7 @@ public class ProductRepository : IRepository<IProduct>
     {
         _jsonService = jsonService;
         _fileService = fileService;
+        PopulateListFromFile();
     }
     public int Add(IProduct entity)
     {
@@ -22,7 +23,7 @@ public class ProductRepository : IRepository<IProduct>
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
             return (int)StatusCodes.InternalError;
         }
     }
@@ -44,7 +45,7 @@ public class ProductRepository : IRepository<IProduct>
 
         } catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
             return (int)StatusCodes.InternalError;
         }
     }
@@ -60,27 +61,45 @@ public class ProductRepository : IRepository<IProduct>
             product.Price = entity.Price;
             product.Description = entity.Description;
             product.Category = entity.Category;
-            product.Brand = entity.Brand;
 
             return (int)StatusCodes.OK;
 
         } catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
             return (int)StatusCodes.InternalError;
         }   
     }
-    public int Save()
+    public int SaveChanges()
     {
         try
         {
             var json = _jsonService.Serialize(_products);
-            _fileService.WriteFile(json, "test.json");
+            _fileService.WriteFile(json, "Products.json");
             return (int)StatusCodes.OK;
-        } catch (Exception ex) { 
-            Console.WriteLine(ex.ToString());
+
+        } catch (Exception ex) {
+
+            Console.WriteLine(ex.Message);
             return (int)StatusCodes.InternalError;
         }
-        
+    }
+    private void PopulateListFromFile()
+    {
+        try
+        {
+            var json = _fileService.ReadFile("Products.json");
+            if(json == null) return;
+            List<IProduct>? items = _jsonService.Deserialize(json);
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                _products.Add(item);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }

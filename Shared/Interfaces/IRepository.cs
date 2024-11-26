@@ -7,5 +7,5 @@ public interface IRepository<TEntity> where TEntity : class
     public TEntity? Get(string id);
     public int Delete(string id);
     public int Update(string id, TEntity entity);
-    public int Save();
+    public int SaveChanges();
 }

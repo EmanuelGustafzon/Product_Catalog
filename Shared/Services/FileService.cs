@@ -20,7 +20,6 @@ public class FileService : IFileService
         }
         catch (IOException e)
         {
-            Console.WriteLine("The file could not be read:");
             Console.WriteLine(e.Message);
             return "";
         }
